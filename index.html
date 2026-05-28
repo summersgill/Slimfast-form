@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #faf7f2;
+    --warm-white: #fff9f4;
+    --ink: #1a1512;
+    --muted: #7a6f67;
+    --accent: #c8834a;
+    --accent-light: #f0d9c4;
+    --border: #e2d9d0;
+    --success: #3d8b5e;
+    --error: #c0392b;
+    --card: #ffffff;
+    --shadow: 0 4px 24px rgba(26,21,18,0.08);
+
+    /* Mode colours */
+    --mode-influencer: #c8834a;
+    --mode-replacement: #4a7fc8;
+    --mode-active-bg: var(--mode-influencer);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+    background-image:
+      radial-gradient(ellipse at 80% 0%, rgba(200,131,74,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 100%, rgba(200,131,74,0.05) 0%, transparent 50%);
+  }
+
+  /* ── Page Header ── */
+  .page-header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .page-header .eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 40px);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+
+  /* ── Mode Toggle ── */
+  .mode-toggle-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 36px;
+  }
+
+  .mode-toggle {
+    display: inline-flex;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 50px;
+    padding: 5px;
+    gap: 4px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+
+  .mode-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border: none;
+    border-radius: 40px;
+    padding: 11px 28px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    color: var(--muted);
+  }
+
+  .mode-btn.active {
+    color: #fff;
+    background: var(--mode-active-bg);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+
+  .mode-btn[data-mode="influencer"].active { background: var(--mode-influencer); }
+  .mode-btn[data-mode="replacement"].active { background: var(--mode-replacement); }
+
+  .mode-description {
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 300;
+    margin-bottom: 28px;
+    min-height: 20px;
+    transition: opacity 0.2s;
+  }
+
+  /* ── Form Card ── */
+  .form-card {
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--card);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+
+  .form-card.mode-replacement {
+    border-color: rgba(74,127,200,0.3);
+    box-shadow: 0 4px 24px rgba(74,127,200,0.08);
+  }
+
+  .form-section {
+    padding: 36px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .form-section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s;
+  }
+
+  .mode-replacement .section-label { color: var(--mode-replacement); }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--accent-light);
+    transition: background 0.3s;
+  }
+
+  .mode-replacement .section-label::after { background: rgba(74,127,200,0.2); }
+
+  /* ── Fields ── */
+  .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field-group.full { grid-template-columns: 1fr; }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+
+  label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  input, select, textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    background: var(--warm-white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    width: 100%;
+    appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(200,131,74,0.12);
+    background: #fff;
+  }
+
+  .mode-replacement input:focus,
+  .mode-replacement select:focus,
+  .mode-replacement textarea:focus {
+    border-color: var(--mode-replacement);
+    box-shadow: 0 0 0 3px rgba(74,127,200,0.12);
+  }
+
+  input::placeholder { color: #c4b8b0; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a6f67' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  input.invalid, select.invalid { border-color: var(--error) !important; box-shadow: 0 0 0 3px rgba(192,57,43,0.08) !important; }
+
+  /* Toggleable fields */
+  .influencer-only, .replacement-only {
+    transition: opacity 0.2s;
+  }
+
+  .influencer-only.hidden,
+  .replacement-only.hidden {
+    display: none;
+  }
+
+  /* ── Postcode ── */
+  .postcode-row { display: flex; gap: 10px; align-items: flex-end; }
+  .postcode-row input { flex: 1; text-transform: uppercase; }
+
+  .lookup-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.1s;
+    flex-shrink: 0;
+  }
+
+  .lookup-btn:hover { background: var(--accent); }
+  .mode-replacement .lookup-btn:hover { background: var(--mode-replacement); }
+  .lookup-btn:active { transform: scale(0.97); }
+  .lookup-btn:disabled { background: #c4b8b0; cursor: not-allowed; }
+
+  .address-select-wrap { display: none; flex-direction: column; gap: 7px; margin-top: 12px; }
+  .address-select-wrap.visible { display: flex; }
+  .address-fields { display: none; flex-direction: column; gap: 16px; margin-top: 16px; }
+  .address-fields.visible { display: flex; }
+
+  .address-tip {
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--accent-light);
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: background 0.3s;
+  }
+
+  .mode-replacement .address-tip { background: rgba(74,127,200,0.1); }
+
+  /* ── Products ── */
+  .product-loading { font-size: 13px; color: var(--muted); padding: 10px 0; display: flex; align-items: center; gap: 8px; }
+  .spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sku-display { font-size: 12px; color: var(--muted); margin-top: 6px; min-height: 16px; font-style: italic; }
+
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* ── Submit ── */
+  .submit-section {
+    padding: 32px 40px;
+    background: var(--warm-white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .submit-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 48px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 320px;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  }
+
+  .submit-btn:hover { background: var(--accent); box-shadow: 0 6px 24px rgba(200,131,74,0.3); }
+  .mode-replacement .submit-btn:hover { background: var(--mode-replacement); box-shadow: 0 6px 24px rgba(74,127,200,0.3); }
+  .submit-btn:active { transform: scale(0.98); }
+  .submit-btn:disabled { background: #c4b8b0; cursor: not-allowed; box-shadow: none; }
+
+  .form-note { font-size: 12px; color: var(--muted); text-align: center; }
+
+  .status-msg { display: none; padding: 14px 20px; border-radius: 10px; font-size: 14px; font-weight: 500; text-align: center; width: 100%; max-width: 400px; }
+  .status-msg.success { display: block; background: rgba(61,139,94,0.1); color: var(--success); border: 1px solid rgba(61,139,94,0.2); }
+  .status-msg.error { display: block; background: rgba(192,57,43,0.08); color: var(--error); border: 1px solid rgba(192,57,43,0.15); }
+
+  .field-error { font-size: 11px; color: var(--error); margin-top: 2px; }
+
+  @media (max-width: 520px) {
+    .form-section { padding: 28px 24px; }
+    .submit-section { padding: 28px 24px; }
+    .field-group { grid-template-columns: 1fr; }
+    .postcode-row { flex-direction: column; }
+    .lookup-btn { width: 100%; }
+    .mode-btn { padding: 10px 18px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="eyebrow">Order Management</div>
+  <h1>Product Order Form</h1>
+</div>
+
+<!-- Mode Toggle -->
+<div class="mode-toggle-wrap">
+  <div class="mode-toggle">
+    <button class="mode-btn active" data-mode="influencer" onclick="setMode('influencer')">🌟 Influencer Order</button>
+    <button class="mode-btn" data-mode="replacement" onclick="setMode('replacement')">🔄 Replacement Order</button>
+  </div>
+</div>
+
+<div class="mode-description" id="mode-description">
+  Gifting orders for influencer marketing — captures social & content details.
+</div>
+
+<div class="form-card" id="form-card">
+
+  <!-- Personal Details -->
+  <div class="form-section">
+    <div class="section-label">Personal Details</div>
+    <div class="field-group">
+      <div class="field">
+        <label for="first-name">First Name <span style="color:var(--error)">*</span></label>
+        <input type="text" id="first-name" placeholder="Jane" autocomplete="given-name">
+      </div>
+      <div class="field">
+        <label for="last-name">Last Name <span style="color:var(--error)">*</span></label>
+        <input type="text" id="last-name" placeholder="Smith" autocomplete="family-name">
+      </div>
+    </div>
+    <div class="field-group full" style="margin-top:16px">
+      <div class="field">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="jane@example.com" autocomplete="email">
+      </div>
+    </div>
+
+    <!-- Influencer only fields -->
+    <div class="field-group influencer-only" style="margin-top:16px" id="social-fields">
+      <div class="field">
+        <label for="instagram">Instagram Handle</label>
+        <input type="text" id="instagram" placeholder="@yourhandle">
+      </div>
+      <div class="field">
+        <label for="platform">Primary Platform</label>
+        <select id="platform">
+          <option value="">Select platform…</option>
+          <option>Instagram</option>
+          <option>TikTok</option>
+          <option>YouTube</option>
+          <option>Facebook</option>
+          <option>Pinterest</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery Address -->
+  <div class="form-section">
+    <div class="section-label">Delivery Address</div>
+    <div class="field">
+      <label for="postcode-input">Postcode</label>
+      <div class="postcode-row">
+        <input type="text" id="postcode-input" placeholder="e.g. BL6 5EJ" maxlength="8" autocomplete="postal-code">
+        <button class="lookup-btn" id="lookup-btn" onclick="lookupPostcode()">Find Address</button>
+      </div>
+      <span class="field-error" id="postcode-error"></span>
+    </div>
+
+    <div class="address-select-wrap" id="address-select-wrap">
+      <label for="address-select">Select Your Address</label>
+      <select id="address-select" onchange="selectAddress()">
+        <option value="">— Choose from list —</option>
+      </select>
+    </div>
+
+    <div class="address-fields" id="address-fields">
+      <p class="address-tip">✏️ Town and county have been pre-filled — please enter your house number and street below.</p>
+      <div id="address-hint" style="display:none;font-size:11px;color:var(--muted);font-style:italic;padding:0 2px;"></div>
+      <div class="field">
+        <label for="addr-line1">Address Line 1 <span style="color:var(--error)">*</span></label>
+        <input type="text" id="addr-line1" placeholder="e.g. 12 High Street" autocomplete="address-line1">
+      </div>
+      <div class="field">
+        <label for="addr-line2">Address Line 2 <span style="font-weight:300;text-transform:none;font-size:11px">(optional)</span></label>
+        <input type="text" id="addr-line2" placeholder="Flat, apartment, building…" autocomplete="address-line2">
+      </div>
+      <div class="field-group">
+        <div class="field">
+          <label for="addr-town">Town / City</label>
+          <input type="text" id="addr-town" autocomplete="address-level2">
+        </div>
+        <div class="field">
+          <label for="addr-county">County</label>
+          <input type="text" id="addr-county">
+        </div>
+      </div>
+      <div class="field">
+        <label for="addr-district">Borough / District <span style="font-weight:300;text-transform:none;font-size:11px">(auto-filled)</span></label>
+        <input type="text" id="addr-district" readonly style="background:#f5f0eb;color:var(--muted);cursor:default;">
+      </div>
+      <div class="field">
+        <label for="addr-postcode">Postcode</label>
+        <input type="text" id="addr-postcode" autocomplete="postal-code">
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Selection -->
+  <div class="form-section">
+    <div class="section-label">Product Selection</div>
+    <div class="field">
+      <label for="product-select">Choose Product <span style="color:var(--error)">*</span></label>
+      <div id="product-loading" class="product-loading">
+        <div class="spinner"></div> Loading products from catalogue…
+      </div>
+      <select id="product-select" style="display:none" onchange="onProductChange()">
+        <option value="">— Select a product —</option>
+      </select>
+      <div class="sku-display" id="sku-display"></div>
+    </div>
+
+    <div class="field-group" style="margin-top:16px">
+      <div class="field">
+        <label for="quantity">Quantity</label>
+        <select id="quantity">
+          <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+          <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+          <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+          <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+          <option value="13">13</option><option value="14">14</option><option value="15">15</option>
+          <option value="16">16</option><option value="17">17</option><option value="18">18</option>
+          <option value="19">19</option><option value="20">20</option>
+        </select>
+      </div>
+
+      <!-- Influencer: content type -->
+      <div class="field influencer-only" id="content-type-field">
+        <label for="content-type">Content Type</label>
+        <select id="content-type">
+          <option value="">Select type…</option>
+          <option>Unboxing / Review</option>
+          <option>Tutorial / How-to</option>
+          <option>Lifestyle Post</option>
+          <option>Story / Reel</option>
+          <option>TikTok Video</option>
+          <option>Blog Post</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <!-- Replacement: batch number -->
+      <div class="field replacement-only hidden" id="batch-field">
+        <label for="batch-number">Batch Number <span style="color:var(--error)">*</span></label>
+        <input type="text" id="batch-number" placeholder="e.g. BATCH-2024-001">
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:16px">
+      <label for="notes">Additional Notes <span style="font-weight:300;text-transform:none;font-size:11px">(optional)</span></label>
+      <textarea id="notes" placeholder="Any special requests or questions…"></textarea>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="submit-section">
+    <button class="submit-btn" id="submit-btn" onclick="submitForm()">Submit Order Request</button>
+    <div class="status-msg" id="status-msg"></div>
+    <p class="form-note">Your details will only be used to process this order.</p>
+  </div>
+
+</div><!-- /form-card -->
+
+<script>
+// ── Config ──────────────────────────────────────────────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxlJiXefOMPian6TMG3l3Jf-8izKHDqjfnixbVsdmu9jGjclsQ2JYiyhO4L8rPqqlL0/exec';
+
+// ── Mode ─────────────────────────────────────────────────────
+let currentMode = 'influencer';
+
+function setMode(mode) {
+  currentMode = mode;
+  const card = document.getElementById('form-card');
+  const desc = document.getElementById('mode-description');
+  const submitBtn = document.getElementById('submit-btn');
+
+  // Toggle card style
+  card.classList.toggle('mode-replacement', mode === 'replacement');
+
+  // Toggle buttons
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+
+  // Show/hide fields
+  document.querySelectorAll('.influencer-only').forEach(el => el.classList.toggle('hidden', mode === 'replacement'));
+  document.querySelectorAll('.replacement-only').forEach(el => el.classList.toggle('hidden', mode === 'influencer'));
+
+  // Update description & button text
+  if (mode === 'influencer') {
+    desc.textContent = 'Gifting orders for influencer marketing — captures social & content details.';
+    submitBtn.textContent = 'Submit Order Request';
+  } else {
+    desc.textContent = 'Replacement orders for existing customers — captures batch reference.';
+    submitBtn.textContent = 'Submit Replacement Request';
+  }
+
+  // Clear any validation errors and status
+  clearErrors();
+  hideStatus();
+}
+
+// ── Products ─────────────────────────────────────────────────
+let productData = [];
+
+async function loadProducts() {
+  try {
+    const url = `${APPS_SCRIPT_URL}?action=getProducts&callback=handleProducts`;
+    await new Promise((resolve, reject) => {
+      window.handleProducts = function(data) {
+        productData = data.products || [];
+        populateProductDropdown();
+        resolve();
+      };
+      const script = document.createElement('script');
+      script.src = url;
+      script.onerror = reject;
+      setTimeout(reject, 8000);
+      document.head.appendChild(script);
+    });
+  } catch (e) {
+    try {
+      const res = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
+      const data = await res.json();
+      productData = data.products || [];
+      populateProductDropdown();
+    } catch (e2) {
+      document.getElementById('product-loading').innerHTML =
+        '<span style="color:var(--error)">⚠ Could not load products. Check Apps Script is deployed as \'Anyone\'.</span>';
+    }
+  }
+}
+
+function populateProductDropdown() {
+  const sel = document.getElementById('product-select');
+  productData.forEach((p, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = p.name;
+    sel.appendChild(opt);
+  });
+  document.getElementById('product-loading').style.display = 'none';
+  sel.style.display = 'block';
+}
+
+function onProductChange() {
+  const sel = document.getElementById('product-select');
+  const skuDisplay = document.getElementById('sku-display');
+  const idx = sel.value;
+  skuDisplay.textContent = idx !== '' && productData[idx]?.sku ? `SKU: ${productData[idx].sku}` : '';
+}
+
+// ── Postcode Lookup ───────────────────────────────────────────
+let addressResults = [];
+
+async function lookupPostcode() {
+  const input = document.getElementById('postcode-input');
+  const btn = document.getElementById('lookup-btn');
+  const errEl = document.getElementById('postcode-error');
+  const pc = input.value.trim().toUpperCase().replace(/\s+/g, '');
+
+  errEl.textContent = '';
+  input.classList.remove('invalid');
+
+  if (!pc) { errEl.textContent = 'Please enter a postcode.'; input.classList.add('invalid'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Searching…';
+
+  try {
+    const res = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(pc)}`);
+    const data = await res.json();
+    if (data.status !== 200) throw new Error('Not found');
+    showAddressFields(data.result);
+  } catch (e) {
+    errEl.textContent = 'Postcode not found. Please check and try again.';
+    input.classList.add('invalid');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Find Address';
+}
+
+function showAddressFields(result) {
+  const town   = result.admin_ward || result.parish || result.admin_district || '';
+  const county = result.admin_county || result.nuts || result.region || '';
+
+  document.getElementById('addr-postcode').value = result.postcode || '';
+  document.getElementById('addr-town').value     = town;
+  document.getElementById('addr-county').value   = county;
+  document.getElementById('addr-district').value = result.admin_district || '';
+
+  document.getElementById('address-select-wrap').classList.remove('visible');
+  document.getElementById('address-fields').classList.add('visible');
+  document.getElementById('addr-line1').focus();
+}
+
+function selectAddress() {
+  const sel = document.getElementById('address-select');
+  const idx = parseInt(sel.value);
+  if (isNaN(idx)) return;
+  const addr = addressResults[idx];
+  document.getElementById('addr-line1').value   = addr.line_1 || '';
+  document.getElementById('addr-line2').value   = addr.line_2 || '';
+  document.getElementById('addr-town').value    = addr.town_or_city || '';
+  document.getElementById('addr-county').value  = addr.county || '';
+  document.getElementById('addr-postcode').value = addr.postcode || '';
+  document.getElementById('address-fields').classList.add('visible');
+}
+
+// ── Validation ───────────────────────────────────────────────
+function validate() {
+  clearErrors();
+  let valid = true;
+
+  const always = [
+    { id: 'first-name' }, { id: 'last-name' },
+    { id: 'addr-line1' }, { id: 'addr-town' }, { id: 'addr-postcode' },
+  ];
+
+  const influencerOnly = [];
+  const replacementOnly = [{ id: 'batch-number' }];
+
+  const fields = [
+    ...always,
+    ...(currentMode === 'influencer' ? influencerOnly : replacementOnly),
+  ];
+
+  fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    if (!el.value.trim()) { el.classList.add('invalid'); valid = false; }
+  });
+
+  const emailEl = document.getElementById('email');
+  if (emailEl.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value)) {
+    emailEl.classList.add('invalid'); valid = false;
+  }
+
+  const productSel = document.getElementById('product-select');
+  if (productSel.value === '') { productSel.classList.add('invalid'); valid = false; }
+
+  return valid;
+}
+
+function clearErrors() {
+  document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+}
+
+// ── Submit ────────────────────────────────────────────────────
+async function submitForm() {
+  if (!validate()) { showStatus('Please fill in all required fields.', 'error'); return; }
+
+  const idx = document.getElementById('product-select').value;
+  const product = productData[idx] || {};
+
+  const base = {
+    timestamp:    new Date().toISOString(),
+    firstName:    document.getElementById('first-name').value.trim(),
+    lastName:     document.getElementById('last-name').value.trim(),
+    email:        document.getElementById('email').value.trim(),
+    addressLine1: document.getElementById('addr-line1').value.trim(),
+    addressLine2: document.getElementById('addr-line2').value.trim(),
+    town:         document.getElementById('addr-town').value.trim(),
+    county:       document.getElementById('addr-county').value.trim(),
+    district:     document.getElementById('addr-district').value.trim(),
+    postcode:     document.getElementById('addr-postcode').value.trim(),
+    productName:  product.name || '',
+    productSKU:   product.sku  || '',
+    quantity:     document.getElementById('quantity').value,
+    notes:        document.getElementById('notes').value.trim(),
+  };
+
+  const payload = currentMode === 'influencer'
+    ? { action: 'submitOrder', ...base,
+        instagram:   document.getElementById('instagram').value.trim(),
+        platform:    document.getElementById('platform').value,
+        contentType: document.getElementById('content-type').value }
+    : { action: 'submitReplacement', ...base,
+        batchNumber: document.getElementById('batch-number').value.trim() };
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const data = await res.json();
+    if (data.result === 'success') {
+      const msg = currentMode === 'influencer'
+        ? '✓ Influencer order submitted successfully! We\'ll be in touch soon.'
+        : '✓ Replacement request submitted successfully! We\'ll be in touch soon.';
+      showStatus(msg, 'success');
+      btn.textContent = currentMode === 'influencer' ? 'Order Submitted ✓' : 'Replacement Submitted ✓';
+      setTimeout(() => resetForm(), 3000);
+    } else {
+      throw new Error(data.error || 'Unknown error');
+    }
+  } catch (e) {
+    showStatus('Something went wrong. Please try again or contact us directly.', 'error');
+    btn.disabled = false;
+    btn.textContent = currentMode === 'influencer' ? 'Submit Order Request' : 'Submit Replacement Request';
+  }
+}
+
+// ── Reset ─────────────────────────────────────────────────────
+function resetForm() {
+  document.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(el => {
+    if (!el.readOnly) el.value = '';
+    el.classList.remove('invalid');
+  });
+  document.querySelectorAll('select').forEach(el => { el.selectedIndex = 0; el.classList.remove('invalid'); });
+  document.getElementById('addr-district').value = '';
+  document.getElementById('address-fields').classList.remove('visible');
+  document.getElementById('address-select-wrap').classList.remove('visible');
+  document.getElementById('postcode-error').textContent = '';
+  document.getElementById('sku-display').textContent = '';
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = false;
+  btn.textContent = currentMode === 'influencer' ? 'Submit Order Request' : 'Submit Replacement Request';
+  setTimeout(hideStatus, 500);
+  document.querySelector('.page-header').scrollIntoView({ behavior: 'smooth' });
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = `status-msg ${type}`;
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideStatus() {
+  const el = document.getElementById('status-msg');
+  el.className = 'status-msg';
+  el.textContent = '';
+}
+
+// ── Init ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadProducts();
+  document.getElementById('postcode-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); lookupPostcode(); }
+  });
+});
+</script>
+</body>
+</html>
