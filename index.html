@@ -3,569 +3,513 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Order Form</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>SlimFast Order Form</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --cream: #faf7f2;
-    --warm-white: #fff9f4;
-    --ink: #1a1512;
-    --muted: #7a6f67;
-    --accent: #c8834a;
-    --accent-light: #f0d9c4;
-    --border: #e2d9d0;
-    --success: #3d8b5e;
-    --error: #c0392b;
+    --bg: #f5f5f5;
     --card: #ffffff;
-    --shadow: 0 4px 24px rgba(26,21,18,0.08);
-
-    /* Mode colours */
-    --mode-influencer: #c8834a;
-    --mode-replacement: #4a7fc8;
-    --mode-active-bg: var(--mode-influencer);
+    --ink: #1a1a1a;
+    --muted: #888888;
+    --border: #e0e0e0;
+    --border-focus: #1a1a1a;
+    --accent-red: #d0021b;
+    --neutral-active: #1a1a1a;
+    --neutral-hover: #333333;
+    --success: #2e7d52;
+    --error: #c0392b;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+    --radius: 10px;
   }
 
   body {
     font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
+    background: var(--bg);
     color: var(--ink);
     min-height: 100vh;
-    padding: 40px 20px 80px;
-    background-image:
-      radial-gradient(ellipse at 80% 0%, rgba(200,131,74,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse at 20% 100%, rgba(200,131,74,0.05) 0%, transparent 50%);
+    padding: 48px 20px 80px;
   }
 
-  /* ── Page Header ── */
+  /* ── Header ── */
   .page-header {
     text-align: center;
-    margin-bottom: 36px;
+    margin-bottom: 40px;
   }
-
-  .page-header .eyebrow {
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 500;
-    margin-bottom: 12px;
+  .page-header img {
+    height: 90px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
   }
-
-  .page-header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(26px, 5vw, 40px);
-    font-weight: 700;
-    color: var(--ink);
-    line-height: 1.1;
+  .page-header p {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 0.2px;
   }
 
   /* ── Mode Toggle ── */
-  .mode-toggle-wrap {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 36px;
-  }
-
+  .mode-toggle-wrap { display: flex; justify-content: center; margin-bottom: 32px; }
   .mode-toggle {
     display: inline-flex;
     background: var(--card);
     border: 1.5px solid var(--border);
     border-radius: 50px;
-    padding: 5px;
-    gap: 4px;
-    box-shadow: var(--shadow);
-    position: relative;
+    padding: 4px;
+    gap: 3px;
+    box-shadow: var(--shadow-sm);
   }
-
   .mode-btn {
     font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    border: none;
-    border-radius: 40px;
-    padding: 11px 28px;
+    font-size: 13px; font-weight: 600;
+    border: none; border-radius: 40px;
+    padding: 10px 24px;
     cursor: pointer;
-    transition: all 0.25s ease;
-    position: relative;
-    z-index: 1;
+    transition: all 0.2s ease;
     background: transparent;
     color: var(--muted);
+    letter-spacing: 0.2px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
-
   .mode-btn.active {
+    background: var(--neutral-active);
     color: #fff;
-    background: var(--mode-active-bg);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
   }
-
-  .mode-btn[data-mode="influencer"].active { background: var(--mode-influencer); }
-  .mode-btn[data-mode="replacement"].active { background: var(--mode-replacement); }
-
-  .mode-description {
-    text-align: center;
-    font-size: 14px;
-    color: var(--muted);
-    font-weight: 300;
-    margin-bottom: 28px;
-    min-height: 20px;
-    transition: opacity 0.2s;
-  }
+  .mode-btn:not(.active):hover { color: var(--ink); }
 
   /* ── Form Card ── */
   .form-card {
-    max-width: 680px;
+    max-width: 660px;
     margin: 0 auto;
     background: var(--card);
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
     border: 1px solid var(--border);
-    transition: border-color 0.3s;
+    overflow: hidden;
   }
 
-  .form-card.mode-replacement {
-    border-color: rgba(74,127,200,0.3);
-    box-shadow: 0 4px 24px rgba(74,127,200,0.08);
-  }
-
-  .form-section {
-    padding: 36px 40px;
-    border-bottom: 1px solid var(--border);
-  }
-
+  .form-section { padding: 32px 36px; border-bottom: 1px solid var(--border); }
   .form-section:last-child { border-bottom: none; }
 
   .section-label {
-    font-size: 10px;
-    letter-spacing: 2.5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 600;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: color 0.3s;
+    color: var(--muted);
+    margin-bottom: 20px;
   }
-
-  .mode-replacement .section-label { color: var(--mode-replacement); }
-
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--accent-light);
-    transition: background 0.3s;
-  }
-
-  .mode-replacement .section-label::after { background: rgba(74,127,200,0.2); }
 
   /* ── Fields ── */
-  .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .field-group.full { grid-template-columns: 1fr; }
-  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
 
   label {
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 11px;
+    font-weight: 600;
     color: var(--muted);
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
   }
 
   input, select, textarea {
     font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
+    font-size: 16px;
     color: var(--ink);
-    background: var(--warm-white);
+    background: #fafafa;
     border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 16px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    outline: none;
-    width: 100%;
-    appearance: none;
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    outline: none; width: 100%; appearance: none;
+    touch-action: auto;
+    -webkit-user-select: text;
+    user-select: text;
   }
-
   input:focus, select:focus, textarea:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(200,131,74,0.12);
+    border-color: var(--border-focus);
     background: #fff;
+    box-shadow: 0 0 0 3px rgba(26,26,26,0.07);
   }
-
-  .mode-replacement input:focus,
-  .mode-replacement select:focus,
-  .mode-replacement textarea:focus {
-    border-color: var(--mode-replacement);
-    box-shadow: 0 0 0 3px rgba(74,127,200,0.12);
-  }
-
-  input::placeholder { color: #c4b8b0; }
-
+  input::placeholder { color: #bbb; }
   select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a6f67' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    padding-right: 40px;
-    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 13px center; padding-right: 36px; cursor: pointer;
   }
-
-  input.invalid, select.invalid { border-color: var(--error) !important; box-shadow: 0 0 0 3px rgba(192,57,43,0.08) !important; }
-
-  /* Toggleable fields */
-  .influencer-only, .replacement-only {
-    transition: opacity 0.2s;
+  input.invalid, select.invalid {
+    border-color: var(--error) !important;
+    box-shadow: 0 0 0 3px rgba(192,57,43,0.08) !important;
   }
+  textarea { resize: vertical; min-height: 88px; }
 
-  .influencer-only.hidden,
-  .replacement-only.hidden {
-    display: none;
+  .influencer-only.hidden, .replacement-only.hidden { display: none; }
+
+  /* ── Access Code ── */
+  .access-section {
+    background: #fafafa;
+    border-bottom: 1px solid var(--border);
+    padding: 24px 36px;
+  }
+  .access-row { display: flex; gap: 10px; align-items: flex-end; }
+  .access-row input { flex: 1; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
+  .access-verify-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600;
+    background: var(--neutral-active); color: #fff;
+    border: none; border-radius: var(--radius);
+    padding: 11px 20px; cursor: pointer; white-space: nowrap;
+    transition: background 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    flex-shrink: 0;
+  }
+  .access-verify-btn:hover { background: var(--neutral-hover); }
+  .access-note { font-size: 12px; color: var(--muted); margin-top: 7px; }
+  .access-success { font-size: 12px; color: var(--success); margin-top: 7px; font-weight: 500; display: none; }
+
+  /* Lock overlay on form body */
+  .form-body { position: relative; }
+  .form-body.locked::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(2px);
+    z-index: 10;
+    border-radius: 0 0 16px 16px;
+    pointer-events: all;
   }
 
   /* ── Postcode ── */
   .postcode-row { display: flex; gap: 10px; align-items: flex-end; }
   .postcode-row input { flex: 1; text-transform: uppercase; }
-
   .lookup-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    background: var(--ink);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 20px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s, transform 0.1s;
-    flex-shrink: 0;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+    background: var(--neutral-active); color: #fff;
+    border: none; border-radius: var(--radius);
+    padding: 11px 18px; cursor: pointer; white-space: nowrap;
+    transition: background 0.15s, transform 0.1s; flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
   }
-
-  .lookup-btn:hover { background: var(--accent); }
-  .mode-replacement .lookup-btn:hover { background: var(--mode-replacement); }
+  .lookup-btn:hover { background: var(--neutral-hover); }
   .lookup-btn:active { transform: scale(0.97); }
-  .lookup-btn:disabled { background: #c4b8b0; cursor: not-allowed; }
+  .lookup-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-  .address-select-wrap { display: none; flex-direction: column; gap: 7px; margin-top: 12px; }
-  .address-select-wrap.visible { display: flex; }
-  .address-fields { display: none; flex-direction: column; gap: 16px; margin-top: 16px; }
+  .address-fields { display: none; flex-direction: column; gap: 14px; margin-top: 14px; }
   .address-fields.visible { display: flex; }
-
-  .address-tip {
-    font-size: 12px;
-    color: var(--muted);
-    background: var(--accent-light);
-    border-radius: 8px;
-    padding: 10px 14px;
-    transition: background 0.3s;
-  }
-
-  .mode-replacement .address-tip { background: rgba(74,127,200,0.1); }
+  .address-tip { font-size: 12px; color: var(--muted); background: #f5f5f5; border-radius: 8px; padding: 9px 13px; }
 
   /* ── Products ── */
   .product-loading { font-size: 13px; color: var(--muted); padding: 10px 0; display: flex; align-items: center; gap: 8px; }
-  .spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+  .spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--ink); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .sku-display { font-size: 12px; color: var(--muted); margin-top: 6px; min-height: 16px; font-style: italic; }
-
-  textarea { resize: vertical; min-height: 90px; }
+  .sku-display { font-size: 12px; color: var(--muted); margin-top: 5px; font-style: italic; min-height: 16px; }
 
   /* ── Submit ── */
-  .submit-section {
-    padding: 32px 40px;
-    background: var(--warm-white);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
-
+  .submit-section { padding: 28px 36px; background: #fafafa; display: flex; flex-direction: column; align-items: center; gap: 14px; }
   .submit-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    background: var(--ink);
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    padding: 16px 48px;
-    cursor: pointer;
-    width: 100%;
-    max-width: 320px;
-    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+    background: var(--neutral-active); color: #fff;
+    border: none; border-radius: var(--radius);
+    padding: 14px 48px; cursor: pointer; width: 100%; max-width: 300px;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    letter-spacing: 0.3px;
   }
-
-  .submit-btn:hover { background: var(--accent); box-shadow: 0 6px 24px rgba(200,131,74,0.3); }
-  .mode-replacement .submit-btn:hover { background: var(--mode-replacement); box-shadow: 0 6px 24px rgba(74,127,200,0.3); }
+  .submit-btn:hover { background: var(--neutral-hover); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
   .submit-btn:active { transform: scale(0.98); }
-  .submit-btn:disabled { background: #c4b8b0; cursor: not-allowed; box-shadow: none; }
+  .submit-btn:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
 
   .form-note { font-size: 12px; color: var(--muted); text-align: center; }
-
-  .status-msg { display: none; padding: 14px 20px; border-radius: 10px; font-size: 14px; font-weight: 500; text-align: center; width: 100%; max-width: 400px; }
-  .status-msg.success { display: block; background: rgba(61,139,94,0.1); color: var(--success); border: 1px solid rgba(61,139,94,0.2); }
-  .status-msg.error { display: block; background: rgba(192,57,43,0.08); color: var(--error); border: 1px solid rgba(192,57,43,0.15); }
-
   .field-error { font-size: 11px; color: var(--error); margin-top: 2px; }
 
+  .status-msg { display: none; padding: 13px 18px; border-radius: var(--radius); font-size: 13px; font-weight: 500; text-align: center; width: 100%; max-width: 380px; }
+  .status-msg.success { display: block; background: rgba(46,125,82,0.08); color: var(--success); border: 1px solid rgba(46,125,82,0.2); }
+  .status-msg.error   { display: block; background: rgba(192,57,43,0.07); color: var(--error);   border: 1px solid rgba(192,57,43,0.15); }
+
   @media (max-width: 520px) {
-    .form-section { padding: 28px 24px; }
-    .submit-section { padding: 28px 24px; }
+    .form-section, .access-section { padding: 24px 20px; }
+    .submit-section { padding: 24px 20px; }
     .field-group { grid-template-columns: 1fr; }
     .postcode-row { flex-direction: column; }
     .lookup-btn { width: 100%; }
-    .mode-btn { padding: 10px 18px; font-size: 12px; }
+    .mode-btn { padding: 9px 16px; font-size: 12px; }
+    .access-row { flex-direction: column; }
+    .access-verify-btn { width: 100%; }
   }
 </style>
 </head>
 <body>
 
 <div class="page-header">
-  <div class="eyebrow">Order Management</div>
-  <h1>Product Order Form</h1>
+  <img src="data:image/png;base64,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" alt="SlimFast">
 </div>
 
 <!-- Mode Toggle -->
 <div class="mode-toggle-wrap">
   <div class="mode-toggle">
-    <button class="mode-btn active" data-mode="influencer" onclick="setMode('influencer')">🌟 Influencer Order</button>
-    <button class="mode-btn" data-mode="replacement" onclick="setMode('replacement')">🔄 Replacement Order</button>
+    <button class="mode-btn" data-mode="influencer" id="btn-influencer">Influencer Order</button>
+    <button class="mode-btn active" data-mode="replacement" id="btn-replacement">Replacement Order</button>
   </div>
 </div>
 
-<div class="mode-description" id="mode-description">
-  Gifting orders for influencer marketing — captures social & content details.
-</div>
+<div class="form-card">
 
-<div class="form-card" id="form-card">
-
-  <!-- Personal Details -->
-  <div class="form-section">
-    <div class="section-label">Personal Details</div>
-    <div class="field-group">
-      <div class="field">
-        <label for="first-name">First Name <span style="color:var(--error)">*</span></label>
-        <input type="text" id="first-name" placeholder="Jane" autocomplete="given-name">
-      </div>
-      <div class="field">
-        <label for="last-name">Last Name <span style="color:var(--error)">*</span></label>
-        <input type="text" id="last-name" placeholder="Smith" autocomplete="family-name">
-      </div>
+  <!-- Access Code -->
+  <div class="access-section" id="access-section">
+    <div class="section-label">Access Code</div>
+    <div class="access-row">
+      <input type="text" id="access-code-input" placeholder="Enter your access code" maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="access-verify-btn" id="verify-btn" type="button">Verify</button>
     </div>
-    <div class="field-group full" style="margin-top:16px">
-      <div class="field">
-        <label for="email">Email Address</label>
-        <input type="email" id="email" placeholder="jane@example.com" autocomplete="email">
-      </div>
-    </div>
-
-    <!-- Influencer only fields -->
-    <div class="field-group influencer-only" style="margin-top:16px" id="social-fields">
-      <div class="field">
-        <label for="instagram">Instagram Handle</label>
-        <input type="text" id="instagram" placeholder="@yourhandle">
-      </div>
-      <div class="field">
-        <label for="platform">Primary Platform</label>
-        <select id="platform">
-          <option value="">Select platform…</option>
-          <option>Instagram</option>
-          <option>TikTok</option>
-          <option>YouTube</option>
-          <option>Facebook</option>
-          <option>Pinterest</option>
-          <option>Other</option>
-        </select>
-      </div>
-    </div>
+    <div class="access-note" id="access-note">Enter the access code provided to you before submitting.</div>
+    <div class="access-success" id="access-success">✓ Access granted — form unlocked.</div>
   </div>
 
-  <!-- Delivery Address -->
-  <div class="form-section">
-    <div class="section-label">Delivery Address</div>
-    <div class="field">
-      <label for="postcode-input">Postcode</label>
-      <div class="postcode-row">
-        <input type="text" id="postcode-input" placeholder="e.g. BL6 5EJ" maxlength="8" autocomplete="postal-code">
-        <button class="lookup-btn" id="lookup-btn" onclick="lookupPostcode()">Find Address</button>
-      </div>
-      <span class="field-error" id="postcode-error"></span>
-    </div>
+  <!-- Form body (locked until code verified) -->
+  <div class="form-body locked" id="form-body">
 
-    <div class="address-select-wrap" id="address-select-wrap">
-      <label for="address-select">Select Your Address</label>
-      <select id="address-select" onchange="selectAddress()">
-        <option value="">— Choose from list —</option>
-      </select>
-    </div>
-
-    <div class="address-fields" id="address-fields">
-      <p class="address-tip">✏️ Town and county have been pre-filled — please enter your house number and street below.</p>
-      <div id="address-hint" style="display:none;font-size:11px;color:var(--muted);font-style:italic;padding:0 2px;"></div>
-      <div class="field">
-        <label for="addr-line1">Address Line 1 <span style="color:var(--error)">*</span></label>
-        <input type="text" id="addr-line1" placeholder="e.g. 12 High Street" autocomplete="address-line1">
-      </div>
-      <div class="field">
-        <label for="addr-line2">Address Line 2 <span style="font-weight:300;text-transform:none;font-size:11px">(optional)</span></label>
-        <input type="text" id="addr-line2" placeholder="Flat, apartment, building…" autocomplete="address-line2">
-      </div>
+    <!-- Personal Details -->
+    <div class="form-section">
+      <div class="section-label">Personal Details</div>
       <div class="field-group">
         <div class="field">
-          <label for="addr-town">Town / City</label>
-          <input type="text" id="addr-town" autocomplete="address-level2">
+          <label for="first-name">First Name <span style="color:var(--error)">*</span></label>
+          <input type="text" id="first-name" placeholder="Jane" autocomplete="given-name">
         </div>
         <div class="field">
-          <label for="addr-county">County</label>
-          <input type="text" id="addr-county">
+          <label for="last-name">Last Name <span style="color:var(--error)">*</span></label>
+          <input type="text" id="last-name" placeholder="Smith" autocomplete="family-name">
         </div>
       </div>
-      <div class="field">
-        <label for="addr-district">Borough / District <span style="font-weight:300;text-transform:none;font-size:11px">(auto-filled)</span></label>
-        <input type="text" id="addr-district" readonly style="background:#f5f0eb;color:var(--muted);cursor:default;">
+      <div class="field-group full" style="margin-top:14px">
+        <div class="field">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="jane@example.com" autocomplete="email">
+        </div>
       </div>
-      <div class="field">
-        <label for="addr-postcode">Postcode</label>
-        <input type="text" id="addr-postcode" autocomplete="postal-code">
+      <!-- Influencer only -->
+      <div class="field-group influencer-only hidden" style="margin-top:14px" id="social-fields">
+        <div class="field">
+          <label for="instagram">Instagram Handle</label>
+          <input type="text" id="instagram" placeholder="@yourhandle">
+        </div>
+        <div class="field">
+          <label for="platform">Primary Platform</label>
+          <select id="platform">
+            <option value="">Select platform…</option>
+            <option>Instagram</option><option>TikTok</option><option>YouTube</option>
+            <option>Facebook</option><option>Pinterest</option><option>Other</option>
+          </select>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Product Selection -->
-  <div class="form-section">
-    <div class="section-label">Product Selection</div>
-    <div class="field">
-      <label for="product-select">Choose Product <span style="color:var(--error)">*</span></label>
-      <div id="product-loading" class="product-loading">
-        <div class="spinner"></div> Loading products from catalogue…
+    <!-- Delivery Address -->
+    <div class="form-section">
+      <div class="section-label">Delivery Address</div>
+      <div class="field">
+        <label for="postcode-input">Postcode</label>
+        <div class="postcode-row">
+          <input type="text" id="postcode-input" placeholder="e.g. BL6 5EJ" maxlength="8" autocomplete="postal-code">
+          <button class="lookup-btn" id="lookup-btn" type="button">Find Address</button>
+        </div>
+        <span class="field-error" id="postcode-error"></span>
       </div>
-      <select id="product-select" style="display:none" onchange="onProductChange()">
-        <option value="">— Select a product —</option>
-      </select>
-      <div class="sku-display" id="sku-display"></div>
+      <div class="address-fields" id="address-fields">
+        <p class="address-tip">✏️ Town and county have been pre-filled — please enter your house number and street below.</p>
+        <div class="field">
+          <label for="addr-line1">Address Line 1 <span style="color:var(--error)">*</span></label>
+          <input type="text" id="addr-line1" placeholder="e.g. 12 High Street" autocomplete="address-line1">
+        </div>
+        <div class="field">
+          <label for="addr-line2">Address Line 2 <span style="font-weight:400;text-transform:none;font-size:11px;letter-spacing:0">(optional)</span></label>
+          <input type="text" id="addr-line2" placeholder="Flat, apartment, building…" autocomplete="address-line2">
+        </div>
+        <div class="field-group">
+          <div class="field">
+            <label for="addr-town">Town / City</label>
+            <input type="text" id="addr-town" autocomplete="address-level2">
+          </div>
+          <div class="field">
+            <label for="addr-county">County</label>
+            <input type="text" id="addr-county">
+          </div>
+        </div>
+        <div class="field">
+          <label for="addr-district">Borough / District <span style="font-weight:400;text-transform:none;font-size:11px;letter-spacing:0">(auto-filled)</span></label>
+          <input type="text" id="addr-district" readonly style="background:#f0f0f0;color:var(--muted);cursor:default;">
+        </div>
+        <div class="field">
+          <label for="addr-postcode">Postcode</label>
+          <input type="text" id="addr-postcode" autocomplete="postal-code">
+        </div>
+      </div>
     </div>
 
-    <div class="field-group" style="margin-top:16px">
+    <!-- Product Selection -->
+    <div class="form-section">
+      <div class="section-label">Product Selection</div>
       <div class="field">
-        <label for="quantity">Quantity</label>
-        <select id="quantity">
-          <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-          <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-          <option value="7">7</option><option value="8">8</option><option value="9">9</option>
-          <option value="10">10</option><option value="11">11</option><option value="12">12</option>
-          <option value="13">13</option><option value="14">14</option><option value="15">15</option>
-          <option value="16">16</option><option value="17">17</option><option value="18">18</option>
-          <option value="19">19</option><option value="20">20</option>
+        <label for="product-select">Choose Product <span style="color:var(--error)">*</span></label>
+        <div id="product-loading" class="product-loading">
+          <div class="spinner"></div> Loading products…
+        </div>
+        <select id="product-select" style="display:none">
+          <option value="">— Select a product —</option>
         </select>
+        <div class="sku-display" id="sku-display"></div>
       </div>
-
-      <!-- Influencer: content type -->
-      <div class="field influencer-only" id="content-type-field">
-        <label for="content-type">Content Type</label>
-        <select id="content-type">
-          <option value="">Select type…</option>
-          <option>Unboxing / Review</option>
-          <option>Tutorial / How-to</option>
-          <option>Lifestyle Post</option>
-          <option>Story / Reel</option>
-          <option>TikTok Video</option>
-          <option>Blog Post</option>
-          <option>Other</option>
-        </select>
+      <div class="field-group" style="margin-top:14px">
+        <div class="field">
+          <label for="quantity">Quantity</label>
+          <select id="quantity">
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+            <option>11</option><option>12</option><option>13</option><option>14</option><option>15</option>
+            <option>16</option><option>17</option><option>18</option><option>19</option><option>20</option>
+          </select>
+        </div>
+        <div class="field influencer-only hidden" id="content-type-field">
+          <label for="content-type">Content Type</label>
+          <select id="content-type">
+            <option value="">Select type…</option>
+            <option>Unboxing / Review</option><option>Tutorial / How-to</option>
+            <option>Lifestyle Post</option><option>Story / Reel</option>
+            <option>TikTok Video</option><option>Blog Post</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field replacement-only" id="batch-field">
+          <label for="batch-number">Batch Number <span style="color:var(--error)">*</span></label>
+          <input type="text" id="batch-number" placeholder="e.g. BATCH-2024-001">
+        </div>
       </div>
-
-      <!-- Replacement: batch number -->
-      <div class="field replacement-only hidden" id="batch-field">
-        <label for="batch-number">Batch Number <span style="color:var(--error)">*</span></label>
-        <input type="text" id="batch-number" placeholder="e.g. BATCH-2024-001">
+      <div class="field" style="margin-top:14px">
+        <label for="notes">Additional Notes <span style="font-weight:400;text-transform:none;font-size:11px;letter-spacing:0">(optional)</span></label>
+        <textarea id="notes" placeholder="Any special requests or questions…"></textarea>
       </div>
     </div>
 
-    <div class="field" style="margin-top:16px">
-      <label for="notes">Additional Notes <span style="font-weight:300;text-transform:none;font-size:11px">(optional)</span></label>
-      <textarea id="notes" placeholder="Any special requests or questions…"></textarea>
+    <!-- Submit -->
+    <div class="submit-section">
+      <button class="submit-btn" id="submit-btn" type="button">Submit Replacement Request</button>
+      <div class="status-msg" id="status-msg"></div>
+      <p class="form-note">Your details will only be used to process this order.</p>
     </div>
-  </div>
 
-  <!-- Submit -->
-  <div class="submit-section">
-    <button class="submit-btn" id="submit-btn" onclick="submitForm()">Submit Order Request</button>
-    <div class="status-msg" id="status-msg"></div>
-    <p class="form-note">Your details will only be used to process this order.</p>
-  </div>
-
+  </div><!-- /form-body -->
 </div><!-- /form-card -->
 
 <script>
-// ── Config ──────────────────────────────────────────────────
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxlJiXefOMPian6TMG3l3Jf-8izKHDqjfnixbVsdmu9jGjclsQ2JYiyhO4L8rPqqlL0/exec';
 
-// ── Mode ─────────────────────────────────────────────────────
-let currentMode = 'influencer';
+// ── Access Code ───────────────────────────────────────────────
+// The access code is verified server-side via Apps Script — it is NOT stored in this file
+let accessGranted = false;
+
+async function verifyCode() {
+  const input = document.getElementById('access-code-input');
+  const note  = document.getElementById('access-note');
+  const btn   = document.getElementById('verify-btn');
+  const val   = input.value.trim().toUpperCase();
+
+  if (!val) { input.focus(); return; }
+
+  // Disable while checking
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+  note.textContent = '';
+  input.style.borderColor = '';
+
+  try {
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=verifyCode&code=${encodeURIComponent(val)}`);
+    const data = await res.json();
+
+    if (data.valid === true) {
+      accessGranted = true;
+      document.getElementById('form-body').classList.remove('locked');
+      // Smooth collapse the access section
+      const section = document.getElementById('access-section');
+      section.style.transition = 'opacity 0.4s ease, max-height 0.5s ease, padding 0.4s ease';
+      section.style.overflow = 'hidden';
+      section.style.maxHeight = section.offsetHeight + 'px';
+      setTimeout(() => {
+        section.style.opacity = '0';
+        section.style.maxHeight = '0';
+        section.style.padding = '0';
+        section.style.borderBottom = 'none';
+      }, 50);
+      setTimeout(() => { section.style.display = 'none'; }, 550);
+    } else {
+      input.style.borderColor = 'var(--error)';
+      note.textContent = '✗ Incorrect code. Please try again.';
+      note.style.color = 'var(--error)';
+      input.value = '';
+      input.focus();
+      btn.disabled = false;
+      btn.textContent = 'Verify';
+    }
+  } catch (e) {
+    note.textContent = '✗ Could not verify — please check your connection and try again.';
+    note.style.color = 'var(--error)';
+    btn.disabled = false;
+    btn.textContent = 'Verify';
+  }
+}
+
+// ── Mode Toggle ───────────────────────────────────────────────
+let currentMode = 'replacement';
+let productData = [];
 
 function setMode(mode) {
   currentMode = mode;
-  const card = document.getElementById('form-card');
-  const desc = document.getElementById('mode-description');
-  const submitBtn = document.getElementById('submit-btn');
-
-  // Toggle card style
-  card.classList.toggle('mode-replacement', mode === 'replacement');
-
-  // Toggle buttons
-  document.querySelectorAll('.mode-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.mode === mode);
-  });
-
-  // Show/hide fields
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
   document.querySelectorAll('.influencer-only').forEach(el => el.classList.toggle('hidden', mode === 'replacement'));
   document.querySelectorAll('.replacement-only').forEach(el => el.classList.toggle('hidden', mode === 'influencer'));
 
-  // Update description & button text
-  if (mode === 'influencer') {
-    desc.textContent = 'Gifting orders for influencer marketing — captures social & content details.';
-    submitBtn.textContent = 'Submit Order Request';
-  } else {
-    desc.textContent = 'Replacement orders for existing customers — captures batch reference.';
-    submitBtn.textContent = 'Submit Replacement Request';
-  }
-
-  // Clear any validation errors and status
+  document.getElementById('submit-btn').textContent = mode === 'influencer'
+    ? 'Submit Order Request'
+    : 'Submit Replacement Request';
   clearErrors();
   hideStatus();
 }
 
 // ── Products ─────────────────────────────────────────────────
-let productData = [];
-
 async function loadProducts() {
   try {
-    const url = `${APPS_SCRIPT_URL}?action=getProducts&callback=handleProducts`;
-    await new Promise((resolve, reject) => {
-      window.handleProducts = function(data) {
-        productData = data.products || [];
-        populateProductDropdown();
-        resolve();
-      };
-      const script = document.createElement('script');
-      script.src = url;
-      script.onerror = reject;
-      setTimeout(reject, 8000);
-      document.head.appendChild(script);
-    });
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
+    const data = await res.json();
+    if (data.products && data.products.length > 0) {
+      productData = data.products;
+      populateProductDropdown();
+      return;
+    }
+    throw new Error('Empty');
   } catch (e) {
     try {
-      const res = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
-      const data = await res.json();
-      productData = data.products || [];
-      populateProductDropdown();
+      await new Promise((resolve, reject) => {
+        const cbName = 'gpCb_' + Date.now();
+        window[cbName] = function(data) {
+          productData = data.products || [];
+          populateProductDropdown();
+          delete window[cbName];
+          resolve();
+        };
+        const s = document.createElement('script');
+        s.src = `${APPS_SCRIPT_URL}?action=getProducts&callback=${cbName}`;
+        s.onerror = () => { delete window[cbName]; reject(); };
+        const t = setTimeout(() => { delete window[cbName]; reject(); }, 10000);
+        s.onload = () => clearTimeout(t);
+        document.head.appendChild(s);
+      });
     } catch (e2) {
       document.getElementById('product-loading').innerHTML =
-        '<span style="color:var(--error)">⚠ Could not load products. Check Apps Script is deployed as \'Anyone\'.</span>';
+        '<span style="color:var(--error)">⚠ Could not load products.</span>';
     }
   }
 }
@@ -574,8 +518,7 @@ function populateProductDropdown() {
   const sel = document.getElementById('product-select');
   productData.forEach((p, i) => {
     const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = p.name;
+    opt.value = i; opt.textContent = p.name;
     sel.appendChild(opt);
   });
   document.getElementById('product-loading').style.display = 'none';
@@ -583,115 +526,75 @@ function populateProductDropdown() {
 }
 
 function onProductChange() {
-  const sel = document.getElementById('product-select');
-  const skuDisplay = document.getElementById('sku-display');
-  const idx = sel.value;
-  skuDisplay.textContent = idx !== '' && productData[idx]?.sku ? `SKU: ${productData[idx].sku}` : '';
+  const idx = document.getElementById('product-select').value;
+  document.getElementById('sku-display').textContent =
+    idx !== '' && productData[idx]?.sku ? `SKU: ${productData[idx].sku}` : '';
 }
 
 // ── Postcode Lookup ───────────────────────────────────────────
-let addressResults = [];
-
 async function lookupPostcode() {
   const input = document.getElementById('postcode-input');
-  const btn = document.getElementById('lookup-btn');
+  const btn   = document.getElementById('lookup-btn');
   const errEl = document.getElementById('postcode-error');
-  const pc = input.value.trim().toUpperCase().replace(/\s+/g, '');
+  const pc    = input.value.trim().toUpperCase().replace(/\s+/g, '');
 
-  errEl.textContent = '';
-  input.classList.remove('invalid');
-
+  errEl.textContent = ''; input.classList.remove('invalid');
   if (!pc) { errEl.textContent = 'Please enter a postcode.'; input.classList.add('invalid'); return; }
 
-  btn.disabled = true;
-  btn.textContent = 'Searching…';
-
+  btn.disabled = true; btn.textContent = 'Searching…';
   try {
-    const res = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(pc)}`);
+    const res  = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(pc)}`);
     const data = await res.json();
     if (data.status !== 200) throw new Error('Not found');
-    showAddressFields(data.result);
+    const r = data.result;
+    document.getElementById('addr-postcode').value = r.postcode || '';
+    document.getElementById('addr-town').value     = r.admin_ward || r.parish || r.admin_district || '';
+    // Strip pseudo-codes like "(pseudo) England (UA/MD/LB)" that postcodes.io puts in admin_county
+    function cleanCounty(val) {
+      if (!val) return '';
+      if (val.toLowerCase().includes('pseudo') || val.toLowerCase().includes('ua/md') || val.includes('(')) return '';
+      return val;
+    }
+    document.getElementById('addr-county').value = cleanCounty(r.admin_county) || r.region || '';
+    document.getElementById('addr-district').value = r.admin_district || '';
+    document.getElementById('address-fields').classList.add('visible');
+    document.getElementById('addr-line1').focus();
   } catch (e) {
     errEl.textContent = 'Postcode not found. Please check and try again.';
     input.classList.add('invalid');
   }
-
-  btn.disabled = false;
-  btn.textContent = 'Find Address';
-}
-
-function showAddressFields(result) {
-  const town   = result.admin_ward || result.parish || result.admin_district || '';
-  const county = result.admin_county || result.nuts || result.region || '';
-
-  document.getElementById('addr-postcode').value = result.postcode || '';
-  document.getElementById('addr-town').value     = town;
-  document.getElementById('addr-county').value   = county;
-  document.getElementById('addr-district').value = result.admin_district || '';
-
-  document.getElementById('address-select-wrap').classList.remove('visible');
-  document.getElementById('address-fields').classList.add('visible');
-  document.getElementById('addr-line1').focus();
-}
-
-function selectAddress() {
-  const sel = document.getElementById('address-select');
-  const idx = parseInt(sel.value);
-  if (isNaN(idx)) return;
-  const addr = addressResults[idx];
-  document.getElementById('addr-line1').value   = addr.line_1 || '';
-  document.getElementById('addr-line2').value   = addr.line_2 || '';
-  document.getElementById('addr-town').value    = addr.town_or_city || '';
-  document.getElementById('addr-county').value  = addr.county || '';
-  document.getElementById('addr-postcode').value = addr.postcode || '';
-  document.getElementById('address-fields').classList.add('visible');
+  btn.disabled = false; btn.textContent = 'Find Address';
 }
 
 // ── Validation ───────────────────────────────────────────────
 function validate() {
-  clearErrors();
-  let valid = true;
-
-  const always = [
+  clearErrors(); let valid = true;
+  const fields = [
     { id: 'first-name' }, { id: 'last-name' },
     { id: 'addr-line1' }, { id: 'addr-town' }, { id: 'addr-postcode' },
+    ...(currentMode === 'replacement' ? [{ id: 'batch-number' }] : []),
   ];
-
-  const influencerOnly = [];
-  const replacementOnly = [{ id: 'batch-number' }];
-
-  const fields = [
-    ...always,
-    ...(currentMode === 'influencer' ? influencerOnly : replacementOnly),
-  ];
-
   fields.forEach(f => {
     const el = document.getElementById(f.id);
     if (!el.value.trim()) { el.classList.add('invalid'); valid = false; }
   });
-
-  const emailEl = document.getElementById('email');
-  if (emailEl.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value)) {
-    emailEl.classList.add('invalid'); valid = false;
+  const email = document.getElementById('email');
+  if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    email.classList.add('invalid'); valid = false;
   }
-
-  const productSel = document.getElementById('product-select');
-  if (productSel.value === '') { productSel.classList.add('invalid'); valid = false; }
-
+  const prod = document.getElementById('product-select');
+  if (prod.value === '') { prod.classList.add('invalid'); valid = false; }
   return valid;
 }
-
-function clearErrors() {
-  document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
-}
+function clearErrors() { document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid')); }
 
 // ── Submit ────────────────────────────────────────────────────
 async function submitForm() {
-  if (!validate()) { showStatus('Please fill in all required fields.', 'error'); return; }
+  if (!accessGranted) { showStatus('Please enter the access code first.', 'error'); return; }
+  if (!validate())    { showStatus('Please fill in all required fields.', 'error'); return; }
 
   const idx = document.getElementById('product-select').value;
   const product = productData[idx] || {};
-
   const base = {
     timestamp:    new Date().toISOString(),
     firstName:    document.getElementById('first-name').value.trim(),
@@ -708,7 +611,6 @@ async function submitForm() {
     quantity:     document.getElementById('quantity').value,
     notes:        document.getElementById('notes').value.trim(),
   };
-
   const payload = currentMode === 'influencer'
     ? { action: 'submitOrder', ...base,
         instagram:   document.getElementById('instagram').value.trim(),
@@ -718,24 +620,19 @@ async function submitForm() {
         batchNumber: document.getElementById('batch-number').value.trim() };
 
   const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  btn.textContent = 'Submitting…';
-
+  btn.disabled = true; btn.textContent = 'Submitting…';
   try {
-    const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const res  = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
     const data = await res.json();
     if (data.result === 'success') {
-      const msg = currentMode === 'influencer'
+      showStatus(currentMode === 'influencer'
         ? '✓ Influencer order submitted successfully! We\'ll be in touch soon.'
-        : '✓ Replacement request submitted successfully! We\'ll be in touch soon.';
-      showStatus(msg, 'success');
+        : '✓ Replacement request submitted successfully! We\'ll be in touch soon.', 'success');
       btn.textContent = currentMode === 'influencer' ? 'Order Submitted ✓' : 'Replacement Submitted ✓';
-      setTimeout(() => resetForm(), 3000);
-    } else {
-      throw new Error(data.error || 'Unknown error');
-    }
+      setTimeout(resetForm, 3000);
+    } else { throw new Error(data.error || 'Unknown'); }
   } catch (e) {
-    showStatus('Something went wrong. Please try again or contact us directly.', 'error');
+    showStatus('Something went wrong. Please try again.', 'error');
     btn.disabled = false;
     btn.textContent = currentMode === 'influencer' ? 'Submit Order Request' : 'Submit Replacement Request';
   }
@@ -743,14 +640,10 @@ async function submitForm() {
 
 // ── Reset ─────────────────────────────────────────────────────
 function resetForm() {
-  document.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(el => {
-    if (!el.readOnly) el.value = '';
-    el.classList.remove('invalid');
-  });
+  document.querySelectorAll('input:not([readonly]):not(#access-code-input), textarea').forEach(el => { el.value = ''; el.classList.remove('invalid'); });
   document.querySelectorAll('select').forEach(el => { el.selectedIndex = 0; el.classList.remove('invalid'); });
   document.getElementById('addr-district').value = '';
   document.getElementById('address-fields').classList.remove('visible');
-  document.getElementById('address-select-wrap').classList.remove('visible');
   document.getElementById('postcode-error').textContent = '';
   document.getElementById('sku-display').textContent = '';
   const btn = document.getElementById('submit-btn');
@@ -759,26 +652,31 @@ function resetForm() {
   setTimeout(hideStatus, 500);
   document.querySelector('.page-header').scrollIntoView({ behavior: 'smooth' });
 }
-
 function showStatus(msg, type) {
   const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = `status-msg ${type}`;
+  el.textContent = msg; el.className = `status-msg ${type}`;
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
-
 function hideStatus() {
   const el = document.getElementById('status-msg');
-  el.className = 'status-msg';
-  el.textContent = '';
+  el.className = 'status-msg'; el.textContent = '';
 }
 
-// ── Init ──────────────────────────────────────────────────────
+// ── Init ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  loadProducts();
+  document.getElementById('btn-influencer').addEventListener('click',  () => setMode('influencer'));
+  document.getElementById('btn-replacement').addEventListener('click', () => setMode('replacement'));
+  document.getElementById('lookup-btn').addEventListener('click',      lookupPostcode);
+  document.getElementById('submit-btn').addEventListener('click',      submitForm);
+  document.getElementById('verify-btn').addEventListener('click',      verifyCode);
+  document.getElementById('product-select').addEventListener('change', onProductChange);
+  document.getElementById('access-code-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); verifyCode(); }
+  });
   document.getElementById('postcode-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); lookupPostcode(); }
   });
+  loadProducts();
 });
 </script>
 </body>
